@@ -33,7 +33,7 @@ type Account struct {
 	CardID        int64     `gorm:"column:card_id"`
 	AccountNumber string    `gorm:"column:account_number"`
 
-	Card Card `gorm:"foreignKey:CardID;references:ID"`
+	Card      Card      `gorm:"foreignKey:CardID;references:ID"`
 	UserLogin UserLogin `gorm:"foreignKey:AccountNumber;references:AccountNumber"`
 }
 
@@ -61,6 +61,23 @@ type Transaction struct {
 
 	Loan LimitLoan `gorm:"foreignKey:LoanID;references:ID"`
 	User Account   `gorm:"foreignKey:UserID;references:ID"`
+}
+
+type FileMetadata struct {
+	FileName string `json:"file_name"`
+	FileSize int64  `json:"file_size"`
+	FileURL  string `json:"file_url"`
+}
+
+type UploadToCloudResult struct {
+	Path   string
+	Bucket string
+	Url    string
+}
+
+type FileRecord struct {
+	ID       string `gorm:"id"`
+	FilePath string
 }
 
 func (UserLogin) TableName() string {

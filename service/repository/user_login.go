@@ -1,7 +1,11 @@
 package repository
 
-import "assesment-sigmatech/service/models"
+import (
+	"assesment-sigmatech/service/models"
 
-func (f *DatabaseData) Register(request models.UserLogin) (err error) {
-	return f.DB.Create(&request).Error
+	"gorm.io/gorm"
+)
+
+func (f *DatabaseData) Register(tx *gorm.DB, request models.UserLogin) (err error) {
+	return tx.Create(&request).Error
 }

@@ -5,6 +5,7 @@ import (
 	"assesment-sigmatech/service/models"
 	"assesment-sigmatech/service/payload"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/jinzhu/copier"
@@ -12,7 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (f *accountApi) CreateAccount(c echo.Context) (err error) {
+func (f *AccountApi) CreateAccount(c echo.Context) (err error) {
 
 	startTime := time.Now()
 	var request models.Account
@@ -69,6 +70,90 @@ func (f *accountApi) CreateAccount(c echo.Context) (err error) {
 	}
 
 	result, err := f.app.CreateAccount(request)
+	if err != nil {
+		remark := result.Message
+		f.log.Error(logrus.Fields{
+			"error": err.Error(),
+		}, nil, remark)
+
+		response.Message = result.Message
+		response.Status = result.Status
+		response.Data = nil
+
+		err = c.JSON(response.Status, response)
+		return
+	}
+
+	elapsedTime := time.Since(startTime)
+	f.log.Info(logrus.Fields{
+		"Request":     request,
+		"Result":      result,
+		"error":       err,
+		"elapsedTime": elapsedTime,
+	}, nil, "log info")
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func (f *AccountApi) UploadIDPhoto(c echo.Context) (err error) {
+	startTime := time.Now()
+	var request models.Account
+	var response helpers.Response
+
+	id := c.FormValue("id")
+	if id == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
+	}
+
+	AccountID, _ := strconv.Atoi(id)
+
+	f.log.Info(logrus.Fields{
+		"request": request,
+	}, request, "log info")
+
+	result, err := f.app.UploadIDPhoto(c, int64(AccountID))
+	if err != nil {
+		remark := result.Message
+		f.log.Error(logrus.Fields{
+			"error": err.Error(),
+		}, nil, remark)
+
+		response.Message = result.Message
+		response.Status = result.Status
+		response.Data = nil
+
+		err = c.JSON(response.Status, response)
+		return
+	}
+
+	elapsedTime := time.Since(startTime)
+	f.log.Info(logrus.Fields{
+		"Request":     request,
+		"Result":      result,
+		"error":       err,
+		"elapsedTime": elapsedTime,
+	}, nil, "log info")
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func (f *AccountApi) UploadSelfiePhoto(c echo.Context) (err error) {
+	startTime := time.Now()
+	var request models.Account
+	var response helpers.Response
+
+	id := c.FormValue("id")
+	if id == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "ID is required"})
+	}
+
+	AccountID, _ := strconv.Atoi(id)
+
+	f.log.Info(logrus.Fields{
+		"request": request,
+	}, request, "log info")
+
+	result, err := f.app.UploadSelfiePhoto(c, int64(AccountID))
 	if err != nil {
 		remark := result.Message
 		f.log.Error(logrus.Fields{

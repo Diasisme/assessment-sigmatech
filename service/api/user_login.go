@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (f *accountApi) Register(c echo.Context) (err error) {
+func (f *AccountApi) Register(c echo.Context) (err error) {
 	startTime := time.Now()
 	var request models.UserLogin
 	var response helpers.Response

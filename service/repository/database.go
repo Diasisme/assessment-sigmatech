@@ -5,6 +5,7 @@ import (
 	"assesment-sigmatech/service/models"
 	"fmt"
 
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,6 +13,19 @@ import (
 type DatabaseData struct {
 	DB  *gorm.DB
 	log *logging.Logger
+}
+
+func (f *DatabaseData) Begin() (*gorm.DB, error) {
+	var err error
+
+	tx := f.DB.Begin()
+	if err != nil {
+		f.log.Error(logrus.Fields{
+			"error": err.Error(),
+		}, nil, "failed to connect")
+		return nil, err
+	}
+	return tx, nil
 }
 
 func InitDB(varenv models.VarEnviroment, log *logging.Logger) *DatabaseData {

@@ -7,14 +7,14 @@ import (
 	v1 "github.com/go-playground/validator/v10"
 )
 
-type accountApi struct {
+type AccountApi struct {
 	app      app.AccountApp
 	validate v1.Validate
 	log      *logging.Logger
 }
 
-func InitApi(app app.AccountApp, log *logging.Logger) *accountApi {
-	return &accountApi{
+func InitApi(app app.AccountApp, log *logging.Logger) *AccountApi {
+	return &AccountApi{
 		app:      app,
 		validate: *v1.New(),
 		log:      log,

@@ -18,6 +18,10 @@ type UserReq struct {
 	AccountNumber string    `json:"account_number" validate:"required"`
 }
 
+type UploadReq struct {
+	ID string `json:"id" validate:"required"`
+}
+
 type TransferReq struct {
 	NomorRekeningAsal   string  `json:"nomor_rekening_asal" validate:"required"`
 	NomorRekeningTujuan string  `json:"nomor_rekening_tujuan" validate:"required"`

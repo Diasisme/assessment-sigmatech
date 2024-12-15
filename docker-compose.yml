@@ -22,48 +22,37 @@ services:
     container_name: svc-sigmatech
     ports:
       -  ${SVC_PORT?Variable not set}:${SVC_PORT?Variable not set}
+      - 40000:40000 
     networks:
       - sigmatech-network
     volumes:
       - ./:/app
-  # svc-journal:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: svc-journal
-  #   ports:
-  #     -  ${SVC_PORT?Variable not set}:${SVC_PORT?Variable not set}
-  #   networks:
-  #     - svc-network
-  #   volumes:
-  #     - ./:/app
-  # zookeeper:
-  #   image: confluentinc/cp-zookeeper:7.4.4
-  #   environment:
-  #     ZOOKEEPER_CLIENT_PORT: 2181
-  #     ZOOKEEPER_TICK_TIME: 2000
-  #   ports:
-  #     - 22181:2181
-  # kafka:
-  #   image: confluentinc/cp-kafka:7.4.4
-  #   depends_on:
-  #     - zookeeper
-  #   ports:
-  #     - 29092:29092
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  minio:
+    image: minio/minio
+    ports:
+      - '${MINIO_API_PORT?Variable not set}:9000'
+      - '${MINIO_CONSOLE_PORT?Variable not set}:9001'
+    networks:
+      - sigmatech-network 
+    volumes:
+      - assessment-sigmatech-minio-data:/data
+      -  ./config/minio-config:/config
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER?Variable not set}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD?Variable not set}
+      - MINIO_DEFAULT_BUCKETS=${MINIO_BUCKET?Variable not set}
+    command: server /data --console-address ":${MINIO_CONSOLE_PORT}"
 
 volumes:
   postgre_data:
     name: assessment-sigmatech-data
     external: true
+  assessment-sigmatech-minio-data:
+    name: assessment-sigmatech-minio-data
+    external: true
 
 networks:
   sigmatech-network:
     name: sigmatech-network
+  
   
