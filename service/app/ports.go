@@ -7,7 +7,7 @@ import (
 
 type AccountDatastore interface {
 	Register(request models.UserLogin) error
-	// BuatTabung(request models.Tabungan) error
+	CreateAccount(request models.Account) error
 	// TambahTabung(request models.Tabungan) error
 	// KurangTabung(request models.Tabungan) error
 	// Transaksi(request models.Transaksi) error
@@ -19,6 +19,6 @@ type AccountDatastore interface {
 
 type AccountApp interface {
 	Register(request models.UserLogin) (response helpers.Response, err error)
-	// Tabung(request models.Tabungan) (response helpers.Response, err error)
+	CreateAccount(request models.Account) (response helpers.Response, err error)
 	// Tarik(request models.Tabungan) (response helpers.Response, err error)
 }

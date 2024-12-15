@@ -8,9 +8,6 @@ import (
 type UserLogin struct {
 	AccountNumber string `gorm:"column:account_number;primaryKey"`
 	Pin           string `gorm:"column:pin;not null"`
-	UserID        int64  `gorm:"column:user_id;not null;default:0"`
-
-	User User `gorm:"foreignKey:UserID;references:ID"`
 }
 
 // Struct Card (credit.card)
@@ -21,21 +18,23 @@ type Card struct {
 }
 
 // Struct User (credit.user)
-type User struct {
-	ID          int64     `gorm:"column:id;primaryKey;autoIncrement"`
-	Nik         string    `gorm:"column:nik;not null;unique"`
-	FullName    string    `gorm:"column:full_name;not null"`
-	LegalName   string    `gorm:"column:legal_name;not null"`
-	Birthplace  string    `gorm:"column:birthplace;not null"`
-	BirthDate   time.Time `gorm:"column:birth_date;not null"`
-	Salary      float64   `gorm:"column:salary;not null"`
-	IDPhoto     string    `gorm:"column:id_photo;not null"`
-	SelfiePhoto string    `gorm:"column:selfie_photo;not null"`
-	CardNumber  string    `gorm:"column:card_number;not null;unique"`
-	UserStatus  int64     `gorm:"column:user_status;not null"`
-	CardID      int64     `gorm:"column:card_id"`
+type Account struct {
+	ID            int64     `gorm:"column:id;primaryKey;autoIncrement"`
+	Nik           string    `gorm:"column:nik;not null;unique"`
+	FullName      string    `gorm:"column:full_name;not null"`
+	LegalName     string    `gorm:"column:legal_name;not null"`
+	Birthplace    string    `gorm:"column:birthplace;not null"`
+	BirthDate     time.Time `gorm:"column:birth_date;not null"`
+	Salary        float64   `gorm:"column:salary;not null"`
+	IDPhoto       string    `gorm:"column:id_photo;not null"`
+	SelfiePhoto   string    `gorm:"column:selfie_photo;not null"`
+	CardNumber    string    `gorm:"column:card_number;not null;unique"`
+	AccountStatus int64     `gorm:"column:user_status;not null"`
+	CardID        int64     `gorm:"column:card_id"`
+	AccountNumber string    `gorm:"column:account_number"`
 
 	Card Card `gorm:"foreignKey:CardID;references:ID"`
+	UserLogin UserLogin `gorm:"foreignKey:AccountNumber;references:AccountNumber"`
 }
 
 // Struct LimitLoan (credit.limit_loan)
@@ -61,7 +60,7 @@ type Transaction struct {
 	AssetName        string  `gorm:"column:asset_name;not null"`
 
 	Loan LimitLoan `gorm:"foreignKey:LoanID;references:ID"`
-	User User      `gorm:"foreignKey:UserID;references:ID"`
+	User Account   `gorm:"foreignKey:UserID;references:ID"`
 }
 
 func (UserLogin) TableName() string {
@@ -72,7 +71,7 @@ func (Card) TableName() string {
 	return "credit.card"
 }
 
-func (User) TableName() string {
+func (Account) TableName() string {
 	return "credit.user"
 }
 

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:latest
@@ -62,7 +60,10 @@ services:
 
 volumes:
   postgre_data:
+    name: assessment-sigmatech-data
+    external: true
 
 networks:
   sigmatech-network:
+    name: sigmatech-network
   

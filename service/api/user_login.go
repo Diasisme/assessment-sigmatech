@@ -8,10 +8,8 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (f *accountApi) Register(c echo.Context) (err error) {
@@ -34,6 +32,8 @@ func (f *accountApi) Register(c echo.Context) (err error) {
 		response.Message = remark
 		response.Status = http.StatusBadRequest
 		response.Data = nil
+
+		err = c.JSON(response.Status, response)
 		return err
 	}
 
@@ -46,6 +46,8 @@ func (f *accountApi) Register(c echo.Context) (err error) {
 		response.Message = remark
 		response.Status = http.StatusBadRequest
 		response.Data = nil
+
+		err = c.JSON(response.Status, response)
 		return err
 	}
 
@@ -60,6 +62,8 @@ func (f *accountApi) Register(c echo.Context) (err error) {
 		response.Message = remark
 		response.Status = http.StatusBadRequest
 		response.Data = nil
+
+		err = c.JSON(response.Status, response)
 		return err
 	}
 
@@ -74,7 +78,7 @@ func (f *accountApi) Register(c echo.Context) (err error) {
 		response.Status = result.Status
 		response.Data = nil
 
-		err = status.Error(codes.OK, err.Error())
+		err = c.JSON(response.Status, response)
 		return
 	}
 

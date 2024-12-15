@@ -10,10 +10,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
+
 	e := echo.New()
 	viper := config.NewViper()
 
@@ -24,16 +25,13 @@ func main() {
 	appRoute := app.InitApp(ds, logger)
 	apiRoute := api.InitApi(appRoute, logger)
 
-	creditSchema := viper.GetString("CREDIT_SCHEMA")
-	fmt.Printf("schema: %s", creditSchema)
-
 	e.POST("/register", apiRoute.Register)
 
 	middleware := middleware.InitMiddleWare(*ds, logger)
 
 	protected := e.Group("/v2")
 	protected.Use(middleware.BasicAuthMiddleWare)
-	// protected.POST("/tabung", apiRoute.Tabung)
+	protected.POST("/create-account", apiRoute.CreateAccount)
 	// protected.POST("/tarik", apiRoute.Tarik)
 
 	e.GET("/", func(c echo.Context) error {

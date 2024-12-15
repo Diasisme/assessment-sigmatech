@@ -23,7 +23,7 @@ func (f *accountApp) Register(request models.UserLogin) (response helpers.Respon
 		}, nil, remark)
 		response.Status = http.StatusBadRequest
 		response.Message = remark
-		err = status.Error(codes.OK, err.Error())
+		err = status.Error(codes.InvalidArgument, err.Error())
 		return
 	}
 
