@@ -36,7 +36,6 @@ func (f *DatabaseData) UpdateIDPhoto(tx *gorm.DB, id int64, url_id string) (err 
 		"error":         result.Error,
 	}, nil, "update result")
 
-	// Periksa apakah ada baris yang diupdate
 	if result.RowsAffected == 0 {
 		return fmt.Errorf("no account found with id %d", id)
 	}

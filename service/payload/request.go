@@ -27,6 +27,14 @@ type UploadReq struct {
 	ID int64 `json:"id" validate:"required"`
 }
 
+type TransactionReq struct {
+	AccountNumber string  `json:"account_number" validate:"required"`
+	UserID        int64   `json:"user_id" validate:"required"`
+	LoanID        int64   `json:"loan_id" validate:"required"`
+	Otr           float64 `json:"otr" validate:"required"`
+	AssetName     string  `json:"asset_name" validate:"required"`
+}
+
 type TransferReq struct {
 	NomorRekeningAsal   string  `json:"nomor_rekening_asal" validate:"required"`
 	NomorRekeningTujuan string  `json:"nomor_rekening_tujuan" validate:"required"`

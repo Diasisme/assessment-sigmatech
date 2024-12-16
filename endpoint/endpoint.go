@@ -23,6 +23,7 @@ func Endpoint(apiRoute *api.AccountApi, ds *repository.DatabaseData, logger *log
 	protected.POST("/upload-id-photo", apiRoute.UploadIDPhoto)
 	protected.POST("/upload-selfie-photo", apiRoute.UploadSelfiePhoto)
 	protected.POST("/account-activate", apiRoute.Activation)
+	protected.POST("/create-transaction", apiRoute.CreateTransaction)
 	// protected.POST("/tarik", apiRoute.Tarik)
 
 	e.GET("/", func(c echo.Context) error {

@@ -12,16 +12,16 @@ type AccountDatastore interface {
 	Begin() (*gorm.DB, error)
 	Register(tx *gorm.DB, request models.UserLogin) error
 	CreateAccount(tx *gorm.DB, request models.Account) error
-	// TambahTabung(request models.Tabungan) error
-	// KurangTabung(request models.Tabungan) error
-	// Transaksi(request models.Transaksi) error
 	GetDataAccount(tx *gorm.DB, id int64) (models.Account, error)
 	UpdateIDPhoto(tx *gorm.DB, id int64, url_id string) error
 	UpdateSelfiePhoto(tx *gorm.DB, id int64, url_id string) error
 	UpdateStatusAccount(tx *gorm.DB, id int64) error
-	// GetDataTabungan(nomor_rekening string) (models.Tabungan, error)
-	// GetSaldoTabungan(nomor_rekening string) (models.Tabungan, error)
-	// Mutasi(nomor_rekening string) ([]models.Transaksi, error)
+	GetDataLimitLoan(tx *gorm.DB, id int64) (*models.LimitLoan, error)
+	GetDataCard(tx *gorm.DB, id int64) (models.Card, error)
+	GetTransactionHistData(tx *gorm.DB, account_number string) (*models.TransactionHist, error)
+	CreateTransaction(tx *gorm.DB, request models.Transaction) error
+	CreateTransactionHist(tx *gorm.DB, request models.TransactionHist) error
+	UpdateTransactionHist(tx *gorm.DB, request models.TransactionHist) error
 }
 
 type AccountApp interface {
@@ -30,5 +30,5 @@ type AccountApp interface {
 	UploadIDPhoto(c echo.Context, account_id int64) (response helpers.Response, err error)
 	UploadSelfiePhoto(c echo.Context, account_id int64) (response helpers.Response, err error)
 	AccountActivation(c echo.Context, request models.Account) (response helpers.Response, err error)
-	// Tarik(request models.Tabungan) (response helpers.Response, err error)
+	CreateTransaction(c echo.Context, request models.Transaction) (response helpers.Response, err error)
 }
