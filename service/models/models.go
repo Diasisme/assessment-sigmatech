@@ -50,18 +50,19 @@ type LimitLoan struct {
 
 // Struct Transaction (credit.transaction)
 type Transaction struct {
-	ID                int64   `gorm:"column:id;primaryKey;autoIncrement"`
-	UserID            int64   `gorm:"column:user_id"`
-	ContractNo        string  `gorm:"column:contract_no;not null;unique"`
-	LoanID            int64   `gorm:"column:loan_id"`
-	Otr               float64 `gorm:"column:otr;not null"`
-	AdminFee          float64 `gorm:"column:admin_fee;not null"`
-	InstallmentValue  float64 `gorm:"column:installment_value;not null"`
-	InterestAmount    float64 `gorm:"column:interest_amount;not null"`
-	AssetName         string  `gorm:"column:asset_name;not null"`
-	AccountNumber     string  `gorm:"column:account_number"`
-	CardNumber        string  `gorm:"column:card_number;not null"`
-	TransactionStatus bool    `gorm:"column:transaction_status;not null;default:true"`
+	ID                int64     `gorm:"column:id;primaryKey;autoIncrement"`
+	UserID            int64     `gorm:"column:user_id"`
+	ContractNo        string    `gorm:"column:contract_no;not null;unique"`
+	LoanID            int64     `gorm:"column:loan_id"`
+	Otr               float64   `gorm:"column:otr;not null"`
+	AdminFee          float64   `gorm:"column:admin_fee;not null"`
+	InstallmentValue  float64   `gorm:"column:installment_value;not null"`
+	InterestAmount    float64   `gorm:"column:interest_amount;not null"`
+	AssetName         string    `gorm:"column:asset_name;not null"`
+	AccountNumber     string    `gorm:"column:account_number"`
+	CardNumber        string    `gorm:"column:card_number;not null"`
+	TransactionStatus bool      `gorm:"column:transaction_status;not null;default:true"`
+	InputDate         time.Time `gorm:"column:input_date;not null"`
 
 	Loan      LimitLoan `gorm:"foreignKey:LoanID;references:ID"`
 	User      Account   `gorm:"foreignKey:UserID;references:ID"`
@@ -69,10 +70,12 @@ type Transaction struct {
 }
 
 type TransactionHist struct {
-	ID            int64   `gorm:"column:id;primaryKey;autoIncrement"`
-	AccountNumber string  `gorm:"column:account_number"`
-	UserID        int64   `gorm:"column:user_id"`
-	TotalLoan     float64 `gorm:"column:total_loan;not null"`
+	ID            int64     `gorm:"column:id;primaryKey;autoIncrement"`
+	AccountNumber string    `gorm:"column:account_number"`
+	UserID        int64     `gorm:"column:user_id"`
+	TotalLoan     float64   `gorm:"column:total_loan;not null"`
+	InputDate     time.Time `gorm:"column:input_date;not null"`
+	UpdateDate    time.Time `gorm:"column:update_date"`
 
 	User      Account   `gorm:"foreignKey:UserID;references:ID"`
 	UserLogin UserLogin `gorm:"foreignKey:AccountNumber;references:AccountNumber"`

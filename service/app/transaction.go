@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -60,6 +61,10 @@ func (f *accountApp) CreateTransaction(c echo.Context, request models.Transactio
 		err = status.Error(http.StatusBadRequest, err.Error())
 		return
 	}
+
+	request.InputDate = time.Now()
+	request.CardNumber = getData.CardNumber
+	request.AdminFee = 10000
 
 	// Get Card Data
 	getCardData, err := f.accRepo.GetDataCard(tx, getData.CardID)
@@ -164,6 +169,7 @@ func (f *accountApp) CreateTransaction(c echo.Context, request models.Transactio
 			AccountNumber: request.AccountNumber,
 			UserID:        request.UserID,
 			TotalLoan:     request.InstallmentValue,
+			InputDate:     time.Now(),
 		}
 
 		if err = f.accRepo.CreateTransactionHist(tx, inputTransactionHist); err != nil {
@@ -201,8 +207,9 @@ func (f *accountApp) CreateTransaction(c echo.Context, request models.Transactio
 		}
 
 		updateRequest := models.TransactionHist{
-			TotalLoan: loanValue,
-			ID:        getTrxHistData.ID,
+			TotalLoan:  loanValue,
+			ID:         getTrxHistData.ID,
+			UpdateDate: time.Now(),
 		}
 
 		if err = f.accRepo.UpdateTransactionHist(tx, updateRequest); err != nil {

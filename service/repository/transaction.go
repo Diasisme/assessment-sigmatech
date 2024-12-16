@@ -29,7 +29,10 @@ func (f *DatabaseData) UpdateTransactionHist(tx *gorm.DB, request models.Transac
 		"total_loan": request.TotalLoan,
 	}, nil, "request input")
 
-	result := tx.Model(&models.TransactionHist{}).Where("id = ?", request.ID).Update("total_loan", request.TotalLoan)
+	result := tx.Model(&models.TransactionHist{}).Where("id = ?", request.ID).Updates(map[string]interface{}{
+		"total_loan":  request.TotalLoan,
+		"update_date": request.UpdateDate,
+	})
 	if result.Error != nil {
 		return result.Error
 	}
