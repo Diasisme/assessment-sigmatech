@@ -120,9 +120,20 @@ func (f *accountApp) CreateTransaction(c echo.Context, request models.Transactio
 		return
 	}
 
+	if request.Otr > getLimitLoan.LimitValue {
+		remark := "Payment must not exceed loan limit"
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusBadRequest
+		response.Message = remark
+		err = status.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+
 	// Calculate Interest Amount and Installment Value
-	request.InterestAmount = (getLimitLoan.LimitValue * getLimitLoan.InterestValue * float64(getLimitLoan.Tenor))
-	request.InstallmentValue = ((getLimitLoan.LimitValue + request.InterestAmount) / float64(getLimitLoan.Tenor))
+	request.InterestAmount = (request.Otr * getLimitLoan.InterestValue * float64(getLimitLoan.Tenor))
+	request.InstallmentValue = ((request.Otr + request.InterestAmount) / float64(getLimitLoan.Tenor))
 	request.ContractNo = strconv.Itoa(utils.GenerateRandomNumber(16))
 
 	getTrxHistData, err := f.accRepo.GetTransactionHistData(tx, request.AccountNumber)
@@ -168,7 +179,7 @@ func (f *accountApp) CreateTransaction(c echo.Context, request models.Transactio
 	} else {
 		loanValue := getTrxHistData.TotalLoan + request.InstallmentValue
 		if loanValue > getCardData.CardLimit {
-			remark := "Your loan is due limit, cannot request loan again"
+			remark := "Your loan is due limit, cannot request loan."
 			f.log.Warn(logrus.Fields{
 				"err": err,
 			}, nil, remark)
