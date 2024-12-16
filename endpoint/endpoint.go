@@ -21,7 +21,8 @@ func Endpoint(apiRoute *api.AccountApi, ds *repository.DatabaseData, logger *log
 	protected.Use(middleware.BasicAuthMiddleWare)
 	protected.POST("/create-account", apiRoute.CreateAccount)
 	protected.POST("/upload-id-photo", apiRoute.UploadIDPhoto)
-	protected.POST("/upload-selfie-photo", apiRoute.UploadIDPhoto)
+	protected.POST("/upload-selfie-photo", apiRoute.UploadSelfiePhoto)
+	protected.POST("/account-activate", apiRoute.Activation)
 	// protected.POST("/tarik", apiRoute.Tarik)
 
 	e.GET("/", func(c echo.Context) error {

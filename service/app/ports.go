@@ -18,6 +18,7 @@ type AccountDatastore interface {
 	GetDataAccount(tx *gorm.DB, id int64) (models.Account, error)
 	UpdateIDPhoto(tx *gorm.DB, id int64, url_id string) error
 	UpdateSelfiePhoto(tx *gorm.DB, id int64, url_id string) error
+	UpdateStatusAccount(tx *gorm.DB, id int64) error
 	// GetDataTabungan(nomor_rekening string) (models.Tabungan, error)
 	// GetSaldoTabungan(nomor_rekening string) (models.Tabungan, error)
 	// Mutasi(nomor_rekening string) ([]models.Transaksi, error)
@@ -28,5 +29,6 @@ type AccountApp interface {
 	CreateAccount(request models.Account) (response helpers.Response, err error)
 	UploadIDPhoto(c echo.Context, account_id int64) (response helpers.Response, err error)
 	UploadSelfiePhoto(c echo.Context, account_id int64) (response helpers.Response, err error)
+	AccountActivation(c echo.Context, request models.Account) (response helpers.Response, err error)
 	// Tarik(request models.Tabungan) (response helpers.Response, err error)
 }

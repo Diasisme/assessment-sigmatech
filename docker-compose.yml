@@ -27,8 +27,9 @@ services:
       - sigmatech-network
     volumes:
       - ./:/app
-  minio:
+  minio-sigmatech:
     image: minio/minio
+    container_name: minio-sigmatech
     ports:
       - '${MINIO_API_PORT?Variable not set}:9000'
       - '${MINIO_CONSOLE_PORT?Variable not set}:9001'
@@ -36,12 +37,11 @@ services:
       - sigmatech-network 
     volumes:
       - assessment-sigmatech-minio-data:/data
-      -  ./config/minio-config:/config
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER?Variable not set}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD?Variable not set}
       - MINIO_DEFAULT_BUCKETS=${MINIO_BUCKET?Variable not set}
-    command: server /data --console-address ":${MINIO_CONSOLE_PORT}"
+    command: server /data --address :${MINIO_API_PORT?Variable not set} --console-address :${MINIO_CONSOLE_PORT?Variable not set}
 
 volumes:
   postgre_data:
@@ -51,8 +51,10 @@ volumes:
     name: assessment-sigmatech-minio-data
     external: true
 
+
 networks:
   sigmatech-network:
     name: sigmatech-network
+    driver: bridge
   
   

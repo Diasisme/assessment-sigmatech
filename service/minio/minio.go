@@ -21,12 +21,13 @@ type MinioData struct {
 	access_key_id     string
 	secret_access_key string
 	minio_bucket      string
+	path_url          string
 }
 
 func InitMinio(varenv models.VarEnviroment, log *logging.Logger) *MinioData {
 	var err error
 
-	endpoint := "172.26.0.3:9000"
+	endpoint := fmt.Sprintf("%[1]s:%[2]s", varenv.MinioPathUrl, varenv.MinioPort)
 	accessKeyID := varenv.MinioUser
 	secretAccessKey := varenv.MinioPass
 	useSSL := false // Ubah jika menggunakan SSL

@@ -67,3 +67,26 @@ func (f *DatabaseData) UpdateSelfiePhoto(tx *gorm.DB, id int64, url_id string) (
 
 	return
 }
+
+func (f *DatabaseData) UpdateStatusAccount(tx *gorm.DB, id int64) (err error) {
+
+	log.Info(logrus.Fields{
+		"id":     id,
+	}, nil, "request input")
+
+	result := tx.Model(&models.Account{}).Where("id = ?", id).Update("user_status", 1)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	log.Info(logrus.Fields{
+		"affected_rows": result.RowsAffected,
+		"error":         result.Error,
+	}, nil, "update result")
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("no account found with id %d", id)
+	}
+
+	return
+}

@@ -1,17 +1,18 @@
 package models
 
 type VarEnviroment struct {
-	Host        string
-	Port        int32
-	User        string
-	Pass        string
-	DB          string
-	Service     string
-	ServicePort string
-	MinioPort   string
-	MinioUser   string
-	MinioPass   string
-	MinioBucket string
+	Host         string
+	Port         int32
+	User         string
+	Pass         string
+	DB           string
+	Service      string
+	ServicePort  string
+	MinioPort    string
+	MinioUser    string
+	MinioPass    string
+	MinioBucket  string
+	MinioPathUrl string
 }
 
 type VarSchema struct {

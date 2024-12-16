@@ -18,8 +18,13 @@ type UserReq struct {
 	AccountNumber string    `json:"account_number" validate:"required"`
 }
 
+type ActivationAccountReq struct {
+	ID            int64  `json:"id" validate:"required"`
+	AccountNumber string `json:"account_number" validate:"required"`
+}
+
 type UploadReq struct {
-	ID string `json:"id" validate:"required"`
+	ID int64 `json:"id" validate:"required"`
 }
 
 type TransferReq struct {

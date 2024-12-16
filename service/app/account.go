@@ -201,3 +201,91 @@ func (f *accountApp) UploadSelfiePhoto(c echo.Context, account_id int64) (respon
 
 	return
 }
+
+func (f *accountApp) AccountActivation(c echo.Context, request models.Account) (response helpers.Response, err error) {
+
+	tx, err := f.accRepo.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	getData, err := f.accRepo.GetDataAccount(tx, request.ID)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		remark := "Cannot fetch data. Please try again."
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusBadRequest
+		response.Message = remark
+		err = status.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if getData.AccountStatus != 0 {
+		remark := "Account already verified."
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusBadRequest
+		response.Message = remark
+		err = status.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if request.AccountNumber != getData.AccountNumber {
+		remark := fmt.Sprintf("Account number is not valid = %s. Please try again.", request.AccountNumber)
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusBadRequest
+		response.Message = remark
+		err = status.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if getData.IDPhoto == "" || getData.SelfiePhoto == "" {
+		remark := "Incomplete Document. Please try again."
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusBadRequest
+		response.Message = remark
+		err = status.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err = f.accRepo.UpdateStatusAccount(tx, request.ID); err != nil {
+		remark := "Failed to enter data. Please try again."
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusBadRequest
+		response.Message = remark
+		err = status.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err = tx.Commit().Error; err != nil {
+		remark := "Transaction failed. Please try again."
+		f.log.Warn(logrus.Fields{
+			"err": err,
+		}, nil, remark)
+		response.Status = http.StatusInternalServerError
+		response.Message = remark
+		return
+	}
+
+	response.Status = 200
+	response.Message = "Account Activate Successfully."
+	response.Data = utils.JSON{
+		"account_id":     getData.ID,
+		"account_number": getData.AccountNumber,
+	}
+
+	return
+}
