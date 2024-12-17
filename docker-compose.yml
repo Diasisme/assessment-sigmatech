@@ -37,11 +37,20 @@ services:
       - sigmatech-network 
     volumes:
       - assessment-sigmatech-minio-data:/data
+      - ./init-minio.sh:/init-minio.sh  
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER?Variable not set}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD?Variable not set}
       - MINIO_DEFAULT_BUCKETS=${MINIO_BUCKET?Variable not set}
-    command: server /data --address :${MINIO_API_PORT?Variable not set} --console-address :${MINIO_CONSOLE_PORT?Variable not set}
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        /opt/minio/bin/minio server /data --address :${MINIO_API_PORT?Variable not set} --console-address :${MINIO_CONSOLE_PORT?Variable not set} & 
+        sleep 10
+        chmod +x /init-minio.sh
+        /init-minio.sh
+        wait
 
 volumes:
   postgre_data:
